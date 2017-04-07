@@ -1,1 +1,1 @@
-Use this folder for the final project code from the Udacity course
+You should be able to run this test by simply opening the index.html file.
