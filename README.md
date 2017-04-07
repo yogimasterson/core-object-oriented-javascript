@@ -81,7 +81,7 @@ Your objectives for the day is to:
 
 ## Day 5: Final Project and check your understanding
 
-- [ ] Complete the [Final Project][udacity] Lesson on Udacity
+- [x] Complete the [Final Project][udacity] Lesson on Udacity
 
 Do you know/understand:
 
