@@ -26,7 +26,7 @@ var Engine = (function(global) {
         lastTime;
 
     canvas.width = 505;
-    canvas.height = 858;
+    canvas.height = 838;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -107,6 +107,8 @@ var Engine = (function(global) {
             flyFishBackward.update(dt);
         });
 
+        deadPlayer.update();
+
         player.update();
 
     }
@@ -184,7 +186,8 @@ var Engine = (function(global) {
         allFlyFish.forEach(function(flyFishBackward) {
           flyFishBackward.render();
         });
-         
+
+        deadPlayer.render();
 
         player.render();
 
@@ -212,7 +215,8 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/char-horn-girl.png'
+        'images/char-horn-girl.png',
+        'images/char-horn-girl-dead.png'
     ]);
     Resources.onReady(init);
 

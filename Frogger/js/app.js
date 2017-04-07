@@ -3,64 +3,23 @@ Object.prototype.render = function() {
   ctx.font = '25px Arial Black'
   ctx.fillText(`SCORE: ${player.score}`,365,824)
   ctx.fillText(`LIVES: ${player.lives}`,12,824)
+  if(player.lives === 0) {
+    ctx.font = '60px Arial Black'
+    ctx.fillStyle = 'RED'
+    ctx.fillText(`YOU LOSE`,80,110)
+    setTimeout(function() {
+      window.location.reload()
+    }, 2000)
+  }
 }
 
-// let collision = null
-//
-// class WoodLogForward {
-//   constructor(x, y) {
-//     this.x = x
-//     this.y = y
-//     this.speed = 150
-//     this.sprite = 'images/log.png';
-//   }
-//
-//   update(dt) {
-//     if(this.x <= 600) {
-//       this.x += this.speed * dt
-//     } else {
-//       this.x = -800
-//     }
-//     if (player.x >= this.x - 30 && player.x <= this.x + 110) {
-//       if (player.y >= this.y - 30 && player.y <= this.y + 90) {
-//       collision = false
-//       }
-//     }
-//   }
-// }
-//
-// class WoodLogBackward {
-//   constructor(x, y) {
-//     this.x = x
-//     this.y = y
-//     this.speed = 100
-//     this.sprite = 'images/log.png';
-//   }
-//
-//   update(dt) {
-//     if(this.x >= -200) {
-//       this.x -= this.speed * dt
-//     } else {
-//       this.x = 1500
-//     }
-//     if (player.x >= this.x - 30 && player.x <= this.x + 110) {
-//       if (player.y >= this.y - 30 && player.y <= this.y + 90) {
-//       collision = false
-//       }
-//     }
-//   }
-// }
-//
-// const allLogs = [];
-// allLogs.push(new WoodLogForward(-50, 130))
-// allLogs.push(new WoodLogForward(-200, 130))
-// allLogs.push(new WoodLogForward(-350, 130))
-// allLogs.push(new WoodLogForward(-800, 130))
-// allLogs.push(new WoodLogBackward(1150, 40))
-// allLogs.push(new WoodLogBackward(1000, 40))
-// allLogs.push(new WoodLogBackward(650, 40))
-// allLogs.push(new WoodLogBackward(500, 40))
-// allLogs.push(new WoodLogBackward(1500, 40))
+let music = new Audio('sounds/music.mp3')
+  music.play()
+let jab = new Audio('sounds/jab.mp3');
+let jump = new Audio('sounds/jump.mp3');
+let shootingStar = new Audio('sounds/shooting-star.mp3');
+let splash = new Audio('sounds/splash.mp3');
+let gameOver = new Audio('sounds/game-over.mp3');
 
 class FlyFishForward {
   constructor(x, y) {
@@ -78,6 +37,8 @@ class FlyFishForward {
     if (player.x >= this.x - 30 && player.x <= this.x + 30) {
       if (player.y >= this.y - 30 && player.y <= this.y + 30) {
       player.reset()
+      player.lives--
+      jab.play()
       }
     }
   }
@@ -99,6 +60,8 @@ class FlyFishBackward {
     if (player.x >= this.x - 30 && player.x <= this.x + 30) {
       if (player.y >= this.y - 30 && player.y <= this.y + 30) {
       player.reset()
+      player.lives--
+      jab.play()
       }
     }
   }
@@ -141,6 +104,8 @@ class EnemyForward {
     if (player.x >= this.x - 30 && player.x <= this.x + 30) {
       if (player.y >= this.y - 30 && player.y <= this.y + 30) {
       player.reset()
+      player.lives--
+      jab.play()
       }
     }
   }
@@ -164,6 +129,8 @@ class EnemyBackward {
     if (player.x >= this.x - 30 && player.x <= this.x + 30) {
       if (player.y >= this.y - 30 && player.y <= this.y + 30) {
       player.reset()
+      player.lives--
+      jab.play()
       }
     }
   }
@@ -180,13 +147,30 @@ allEnemies.push(new EnemyBackward(1200, 390))
 allEnemies.push(new EnemyForward(-150, 475))
 allEnemies.push(new EnemyForward(-300, 475))
 
+class DeadPlayer {
+  constructor() {
+    this.x = -500
+    this.y = -500
+    this.sprite = 'images/char-horn-girl-dead.png'
+  }
+
+  update(dt) {
+    if(player.lives === 0) {
+      this.x = 40
+      this.y = 300
+      gameOver.play()
+    }
+  }
+}
+
+const deadPlayer = new DeadPlayer()
 
 class Player {
   constructor() {
     this.x = 200
     this.y = 630
     this.score = 0
-    this.lives = 9
+    this.lives = 3
     this.sprite = 'images/char-horn-girl.png';
   }
 
@@ -198,18 +182,32 @@ class Player {
   update(dt) {
     if(this.playerInput === 'left' && this.x > 0) {
       this.x = this.x - 101
+      jump.play()
     } else if(this.playerInput === 'right' && this.x < 400) {
       this.x = this.x + 101
+      jump.play()
     } else if(this.playerInput === 'up') {
       this.y = this.y - 80
+      jump.play()
     } else if(this.playerInput === 'down' && this.y < 630) {
       this.y = this.y + 80
+      jump.play()
     }
 
     this.playerInput = null
 
     if (this.y < -20) {
       this.reset()
+      this.score++
+      shootingStar.play()
+    }
+
+    if (this.x >= -101 && this.x <= 0 || this.x >= 101 && this.x <= 202 || this.x >= 303 && this.x <= 404) {
+      if (this.y >= 41.9 && this.y <= 209.5) {
+      this.reset()
+      player.lives--
+      splash.play()
+      }
     }
   }
 
@@ -218,8 +216,7 @@ class Player {
   }
 }
 
-var player = new Player()
-
+const player = new Player()
 
 document.addEventListener('keyup', e => {
     const allowedKeys = {
